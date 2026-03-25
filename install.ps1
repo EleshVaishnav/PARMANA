@@ -1,109 +1,153 @@
-# ─────────────────────────────────────────
-#  PARMANA INSTALLER — Windows
-#  Har Bar Naya — Free, Local, Limitless AI
-#  https://github.com/YOUR_USERNAME/parmana
-# ─────────────────────────────────────────
+# PARMANA INSTALLER — Windows
+# Har Bar Naya — Free, Local, Limitless AI
 
 $ErrorActionPreference = "Stop"
 $PARMANA_VERSION = "1.0.0"
-$REPO_RAW = "https://raw.githubusercontent.com/EleshVaishnav/parmana/main"
+$REPO_RAW = "https://raw.githubusercontent.com/YOUR_USERNAME/parmana/main"
 
-# ── Banner ──────────────────────────────
 Clear-Host
 Write-Host ""
 Write-Host "  ██████╗  █████╗ ██████╗ ███╗   ███╗ █████╗ ███╗   ██╗ █████╗ " -ForegroundColor Blue
 Write-Host "  ██╔══██╗██╔══██╗██╔══██╗████╗ ████║██╔══██╗████╗  ██║██╔══██╗" -ForegroundColor Blue
 Write-Host "  ██████╔╝███████║██████╔╝██╔████╔██║███████║██╔██╗ ██║███████║" -ForegroundColor Blue
 Write-Host "  ██╔═══╝ ██╔══██║██╔══██╗██║╚██╔╝██║██╔══██║██║╚██╗██║██╔══██║" -ForegroundColor Blue
-Write-Host "  ██║     ██║  ██║██║  ██║██║  ╚═╝ ██║██║  ██║██║ ╚████║██║  ██║" -ForegroundColor Blue
-Write-Host "  ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝      ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝" -ForegroundColor Blue
+Write-Host "  ██║     ██║  ██║██║  ██║██║ ╚═╝ ██║██║  ██║██║ ╚████║██║  ██║" -ForegroundColor Blue
+Write-Host "  ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝" -ForegroundColor Blue
 Write-Host ""
 Write-Host "  Har Bar Naya — Free, Local, Limitless AI" -ForegroundColor White
 Write-Host "  Version: $PARMANA_VERSION"
 Write-Host ""
 
-# ── Step 1: RAM Detect ──────────────────
-Write-Host "[1/4] System check ho raha hai..." -ForegroundColor Cyan
-
+# STEP 1: RAM detect
+Write-Host "[1/5] System check ho raha hai..." -ForegroundColor Cyan
 $RAM = Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum
 $TOTAL_RAM_GB = [math]::Round($RAM.Sum / 1GB)
+Write-Host "  RAM : ${TOTAL_RAM_GB}GB detected"
+Write-Host ""
 
-Write-Host "  RAM    : ${TOTAL_RAM_GB}GB detected"
-Write-Host "  OS     : Windows"
-
-# ── Step 2: Model Choose ────────────────
-Write-Host "[2/4] Best model choose ho raha hai..." -ForegroundColor Cyan
+# STEP 2: Model choose
+Write-Host "[2/5] Best model choose ho raha hai..." -ForegroundColor Cyan
 
 if ($TOTAL_RAM_GB -le 3) {
-    $MODEL = "qwen3:0.6b"
-    $MODEL_NAME = "Parmana Nano (0.6B)"
-    $MODEL_SIZE = "~400MB"
+    $MODEL = "qwen3:0.6b"; $MODEL_NAME = "Parmana Nano (0.6B)"; $MODEL_SIZE_MB = 400
 } elseif ($TOTAL_RAM_GB -le 5) {
-    $MODEL = "qwen3:2b"
-    $MODEL_NAME = "Parmana Mini (2B)"
-    $MODEL_SIZE = "~850MB"
+    $MODEL = "qwen3:2b"; $MODEL_NAME = "Parmana Mini (2B)"; $MODEL_SIZE_MB = 850
 } elseif ($TOTAL_RAM_GB -le 7) {
-    $MODEL = "qwen3:4b"
-    $MODEL_NAME = "Parmana (4B)"
-    $MODEL_SIZE = "~1.8GB"
+    $MODEL = "qwen3:4b"; $MODEL_NAME = "Parmana (4B)"; $MODEL_SIZE_MB = 1800
 } else {
-    $MODEL = "qwen3:8b"
-    $MODEL_NAME = "Parmana Pro (8B)"
-    $MODEL_SIZE = "~4GB"
+    $MODEL = "qwen3:8b"; $MODEL_NAME = "Parmana Pro (8B)"; $MODEL_SIZE_MB = 4000
+}
+
+if ($MODEL_SIZE_MB -ge 1000) {
+    $MODEL_SIZE_DISPLAY = "{0:N1} GB" -f ($MODEL_SIZE_MB / 1000)
+} else {
+    $MODEL_SIZE_DISPLAY = "$MODEL_SIZE_MB MB"
+}
+
+Write-Host "  Model : $MODEL_NAME" -ForegroundColor Green
+Write-Host "  Size  : $MODEL_SIZE_DISPLAY (sirf pehli baar download hoga)"
+Write-Host ""
+
+# STEP 3: Drive selection
+Write-Host "[3/5] Install location choose karo..." -ForegroundColor Cyan
+Write-Host ""
+
+$AVAILABLE_DRIVES = Get-PSDrive -PSProvider FileSystem | Where-Object {
+    $_.Name -match '^[A-Z]$' -and (Test-Path "$($_.Name):\")
+} | ForEach-Object {
+    $freeBytes = $_.Free
+    $freeGB = [math]::Round($freeBytes / 1GB, 1)
+    if ($freeBytes -ge 1GB) {
+        $freeDisplay = "{0:N1} GB free" -f $freeGB
+    } else {
+        $freeDisplay = "{0:N0} MB free" -f ($freeBytes / 1MB)
+    }
+    [PSCustomObject]@{ Letter = $_.Name; FreeGB = $freeGB; FreeDisplay = $freeDisplay }
+}
+
+$i = 1
+foreach ($drive in $AVAILABLE_DRIVES) {
+    $hasSpace = $drive.FreeGB -ge ($MODEL_SIZE_MB / 1000 + 0.5)
+    $tag = if ($hasSpace) { "[OK] " } else { "[LOW]" }
+    $col = if ($hasSpace) { "Green" } else { "Red" }
+    Write-Host "  $i. $($drive.Letter):\ — $tag — $($drive.FreeDisplay)" -ForegroundColor $col
+    $i++
 }
 
 Write-Host ""
-Write-Host "  → $MODEL_NAME selected" -ForegroundColor Green
-Write-Host "  Download size: $MODEL_SIZE"
-Write-Host "  (Sirf pehli baar — phir hamesha offline)"
+Write-Host "  Konsa drive chahiye? (number enter karo): " -ForegroundColor Yellow -NoNewline
+$CHOICE = Read-Host
+
+$IDX = [int]$CHOICE - 1
+if ($IDX -lt 0 -or $IDX -ge $AVAILABLE_DRIVES.Count) {
+    Write-Host "  Galat input — C:\ use ho raha hai" -ForegroundColor Red
+    $SELECTED_DRIVE = "C"
+} else {
+    $SELECTED_DRIVE = $AVAILABLE_DRIVES[$IDX].Letter
+}
+
+$INSTALL_DIR = "${SELECTED_DRIVE}:\Parmana"
+Write-Host ""
+Write-Host "  Install location: $INSTALL_DIR" -ForegroundColor Green
 Write-Host ""
 
-# ── Step 3: Ollama Install ──────────────
-Write-Host "[3/4] Ollama install ho raha hai..." -ForegroundColor Cyan
+# STEP 4: Ollama install
+Write-Host "[4/5] Ollama install ho raha hai..." -ForegroundColor Cyan
 
 $ollamaCheck = Get-Command ollama -ErrorAction SilentlyContinue
 if ($ollamaCheck) {
     Write-Host "  Ollama already installed — skip" -ForegroundColor Green
 } else {
-    Write-Host "  Ollama download ho raha hai..."
     $ollamaInstaller = "$env:TEMP\OllamaSetup.exe"
-    Invoke-WebRequest -Uri "https://ollama.com/download/OllamaSetup.exe" -OutFile $ollamaInstaller
-    Start-Process -FilePath $ollamaInstaller -Args "/S" -Wait
-    Write-Host "  Ollama installed!" -ForegroundColor Green
+    Write-Host "  Downloading Ollama..."
 
-    # PATH refresh
+    $wc = New-Object System.Net.WebClient
+    $wc.DownloadProgressChanged += {
+        $dlMB = [math]::Round($_.BytesReceived / 1MB, 1)
+        $totalMB = [math]::Round($_.TotalBytesToReceive / 1MB, 1)
+        Write-Progress -Activity "Ollama" -Status "$dlMB MB / $totalMB MB" -PercentComplete $_.ProgressPercentage
+    }
+    $wc.DownloadFileAsync([Uri]"https://ollama.com/download/OllamaSetup.exe", $ollamaInstaller)
+    while ($wc.IsBusy) { Start-Sleep -Milliseconds 100 }
+    Write-Progress -Activity "Ollama" -Completed
+
+    $ollamaDir = "${SELECTED_DRIVE}:\Ollama"
+    Start-Process -FilePath $ollamaInstaller -Args "/S /D=$ollamaDir" -Wait
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+    Write-Host "  Ollama installed!" -ForegroundColor Green
 }
 
-# ── Step 4: Parmana Setup ───────────────
-Write-Host "[4/4] Parmana setup ho raha hai..." -ForegroundColor Cyan
-Write-Host "  Model download ho raha hai: $MODEL"
-Write-Host "  Yeh kuch minutes le sakta hai..."
+# STEP 5: Parmana model download
+Write-Host "[5/5] Parmana download ho raha hai..." -ForegroundColor Cyan
 Write-Host ""
+Write-Host "  Model  : $MODEL_NAME"
+Write-Host "  Size   : $MODEL_SIZE_DISPLAY"
+Write-Host "  Folder : $INSTALL_DIR\models"
+Write-Host ""
+
+$env:OLLAMA_MODELS = "$INSTALL_DIR\models"
+[System.Environment]::SetEnvironmentVariable("OLLAMA_MODELS", "$INSTALL_DIR\models", "User")
+New-Item -ItemType Directory -Force -Path "$INSTALL_DIR\models" | Out-Null
 
 ollama pull $MODEL
 
-# Modelfile download aur create
-$ParmanaDir = "$env:USERPROFILE\.parmana"
-New-Item -ItemType Directory -Force -Path $ParmanaDir | Out-Null
-$ModelfilePath = "$ParmanaDir\Modelfile"
+# Modelfile setup
+$cfgDir = "$INSTALL_DIR\config"
+New-Item -ItemType Directory -Force -Path $cfgDir | Out-Null
+$mfPath = "$cfgDir\Modelfile"
+Invoke-WebRequest -Uri "$REPO_RAW/Modelfile" -OutFile "$mfPath.tmp"
+(Get-Content "$mfPath.tmp") -replace "FROM qwen3:2b", "FROM $MODEL" | Set-Content $mfPath
+Remove-Item "$mfPath.tmp"
+ollama create parmana -f $mfPath
 
-Invoke-WebRequest -Uri "$REPO_RAW/Modelfile" -OutFile "$ModelfilePath.tmp"
-
-# Model name update karo
-(Get-Content "$ModelfilePath.tmp") -replace "FROM qwen3:2b", "FROM $MODEL" | Set-Content $ModelfilePath
-Remove-Item "$ModelfilePath.tmp"
-
-ollama create parmana -f $ModelfilePath
-
-# ── Done! ───────────────────────────────
+# DONE
 Write-Host ""
-Write-Host "╔══════════════════════════════════════╗" -ForegroundColor Green
-Write-Host "║   Parmana taiyaar hai!               ║" -ForegroundColor Green
-Write-Host "║   Har Bar Naya.                      ║" -ForegroundColor Green
-Write-Host "╚══════════════════════════════════════╝" -ForegroundColor Green
+Write-Host "╔══════════════════════════════════════════╗" -ForegroundColor Green
+Write-Host "║                                          ║" -ForegroundColor Green
+Write-Host "║   Parmana taiyaar hai!  Har Bar Naya.    ║" -ForegroundColor Green
+Write-Host "║                                          ║" -ForegroundColor Green
+Write-Host "╚══════════════════════════════════════════╝" -ForegroundColor Green
 Write-Host ""
-Write-Host "  Shuru karne ke liye type karo:"
-Write-Host ""
+Write-Host "  Ab type karo:" -ForegroundColor White
 Write-Host "  ollama run parmana" -ForegroundColor Yellow
 Write-Host ""
