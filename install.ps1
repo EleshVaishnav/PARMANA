@@ -3,7 +3,7 @@
 
 $ErrorActionPreference = "Stop"
 $PARMANA_VERSION = "1.0.0"
-$REPO_RAW = "https://raw.githubusercontent.com/YOUR_USERNAME/parmana/main"
+$REPO_RAW = "https://raw.githubusercontent.com/EleshVaishnav/parmana/main"
 
 Clear-Host
 Write-Host ""
