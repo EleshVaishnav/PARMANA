@@ -101,15 +101,9 @@ if ($ollamaCheck) {
     $ollamaInstaller = "$env:TEMP\OllamaSetup.exe"
     Write-Host "  Downloading Ollama..."
 
-    $wc = New-Object System.Net.WebClient
-    $wc.DownloadProgressChanged += {
-        $dlMB = [math]::Round($_.BytesReceived / 1MB, 1)
-        $totalMB = [math]::Round($_.TotalBytesToReceive / 1MB, 1)
-        Write-Progress -Activity "Ollama" -Status "$dlMB MB / $totalMB MB" -PercentComplete $_.ProgressPercentage
-    }
-    $wc.DownloadFileAsync([Uri]"https://ollama.com/download/OllamaSetup.exe", $ollamaInstaller)
-    while ($wc.IsBusy) { Start-Sleep -Milliseconds 100 }
-    Write-Progress -Activity "Ollama" -Completed
+    Invoke-WebRequest -Uri "https://ollama.com/download/OllamaSetup.exe" `
+    -OutFile $ollamaInstaller `
+    -UseBasicParsing
 
     $ollamaDir = "${SELECTED_DRIVE}:\Ollama"
     Start-Process -FilePath $ollamaInstaller -Args "/S /D=$ollamaDir" -Wait
