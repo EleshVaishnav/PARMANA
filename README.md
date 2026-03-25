@@ -24,12 +24,12 @@ Parmana is a **fully local AI assistant** that runs entirely on your PC.
 
 **Mac / Linux:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/parmana/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/EleshVaishnav/parmana/main/install.sh | sh
 ```
 
 **Windows (PowerShell):**
 ```powershell
-irm https://raw.githubusercontent.com/YOUR_USERNAME/parmana/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/EleshVaishnav/parmana/main/install.ps1 | iex
 ```
 
 Parmana will automatically detect your PC specs and download the right model.
