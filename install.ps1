@@ -107,6 +107,10 @@ if ($ollamaCheck) {
 
     $ollamaDir = "${SELECTED_DRIVE}:\Ollama"
     Start-Process -FilePath $ollamaInstaller -Args "/S /D=$ollamaDir" -Wait
+    Start-Sleep -Seconds 3
+Start-Process "ollama" -ArgumentList "serve" -WindowStyle Hidden
+Start-Sleep -Seconds 5
+
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
     Write-Host "  Ollama installed!" -ForegroundColor Green
 }
