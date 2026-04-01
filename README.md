@@ -34,6 +34,18 @@ irm https://raw.githubusercontent.com/EleshVaishnav/parmana/main/install.ps1 | i
 
 Parmana will automatically detect your PC specs and download the right model.
 
+## Uninstall
+
+**Windows:**
+```powershell
+irm https://raw.githubusercontent.com/EleshVaishnav/PARMANA/main/uninstall.ps1 | iex
+```
+
+**Mac/Linux:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/EleshVaishnav/PARMANA/main/uninstall.sh | sh
+```
+
 ---
 
 ## How It Works
