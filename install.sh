@@ -113,7 +113,7 @@ ollama pull "$MODEL"
 MODELFILE_PATH="$HOME/.parmana/Modelfile"
 mkdir -p "$HOME/.parmana"
 
-curl -fsSL "$REPO_RAW/Modelfile" -o "$MODELFILE_PATH.tmp"
+curl -fsSL "$REPO_RAW/config/Modelfile" -o "$MODELFILE_PATH.tmp"
 
 # Model name update karo Modelfile mein
 sed "s|FROM qwen3:2b|FROM $MODEL|g" "$MODELFILE_PATH.tmp" > "$MODELFILE_PATH"
