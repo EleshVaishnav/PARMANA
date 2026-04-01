@@ -3,7 +3,7 @@ import ollama
 from datetime import datetime
 from pathlib import Path
 
-MEMORY_DIR = Path("E:/Parmana/data")
+MEMORY_DIR = Path(__file__).parent
 MEMORY_FILE = MEMORY_DIR / "MEMORY.md"
 HISTORY_FILE = MEMORY_DIR / "HISTORY.md"
 
