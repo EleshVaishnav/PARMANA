@@ -27,8 +27,17 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     memory_context = get_context()
 
     # System prompt + memory
-    system = f"""You are Parmana — a free, local, limitless AI assistant.
-{memory_context}"""
+    memory_context = get_context()
+
+if memory_context:
+    system = f"""You are Parmana - a free, local, limitless AI assistant.
+
+IMPORTANT - This is what you remember about this user:
+{memory_context}
+
+Use this information naturally in conversation."""
+else:
+    system = "You are Parmana - a free, local, limitless AI assistant."
 
     # Messages banao
     messages = [{"role": "system", "content": system}]
