@@ -148,4 +148,39 @@ Write-Host "╚═════════════════════�
 Write-Host ""
 Write-Host "  Ab type karo:" -ForegroundColor White
 Write-Host "  ollama run parmana" -ForegroundColor Yellow
+
+# Telegram setup
+Write-Host ""
+Write-Host "Telegram bot setup karna chahte ho? (y/n): " -ForegroundColor Yellow -NoNewline
+$TELEGRAM = Read-Host
+
+if ($TELEGRAM -eq "y") {
+    Write-Host "BotFather se token lo:" -ForegroundColor Cyan
+    Write-Host "1. Telegram pe @BotFather kholo" -ForegroundColor White
+    Write-Host "2. /newbot type karo" -ForegroundColor White
+    Write-Host "3. Token copy karo" -ForegroundColor White
+    Write-Host ""
+    Write-Host "Bot token enter karo: " -ForegroundColor Yellow -NoNewline
+    $BOT_TOKEN = Read-Host
+    
+    # parmana_bot.py download karo
+    Invoke-WebRequest -Uri "$REPO_RAW/parmana_bot.py" -OutFile "$INSTALL_DIR\parmana_bot.py" -UseBasicParsing
+    
+    # Token replace karo
+    (Get-Content "$INSTALL_DIR\parmana_bot.py") -replace "YOUR_BOT_TOKEN", $BOT_TOKEN | Set-Content "$INSTALL_DIR\parmana_bot.py"
+    
+    # Python check
+    $pythonCheck = Get-Command python -ErrorAction SilentlyContinue
+    if (-not $pythonCheck) {
+        Write-Host "Python install ho raha hai..." -ForegroundColor Cyan
+        winget install Python.Python.3.11 -e
+    }
+    
+    # Dependencies install
+    python -m pip install python-telegram-bot ollama
+    
+    Write-Host "Telegram bot ready!" -ForegroundColor Green
+    Write-Host "Chalaane ke liye: python $INSTALL_DIR\parmana_bot.py" -ForegroundColor Yellow
+}
+
 Write-Host ""
