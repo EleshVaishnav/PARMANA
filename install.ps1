@@ -133,7 +133,7 @@ ollama pull $MODEL
 $cfgDir = "$INSTALL_DIR\config"
 New-Item -ItemType Directory -Force -Path $cfgDir | Out-Null
 $mfPath = "$cfgDir\Modelfile"
-Invoke-WebRequest -Uri "$REPO_RAW/Modelfile" -OutFile "$mfPath.tmp"
+Invoke-WebRequest -Uri "$REPO_RAW/config/Modelfile" -OutFile "$mfPath.tmp"
 (Get-Content "$mfPath.tmp") -replace "FROM qwen3:2b", "FROM $MODEL" | Set-Content $mfPath
 Remove-Item "$mfPath.tmp"
 ollama create parmana -f $mfPath
