@@ -5,7 +5,7 @@
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Mac%20%7C%20Linux-lightgrey)
 ![No API](https://img.shields.io/badge/API-None-green)
 ![Cost](https://img.shields.io/badge/cost-Free%20Forever-brightgreen)
-
+![GitHub stars](https://img.shields.io/github/stars/EleshVaishnav/PARMANA?style=social)
 ---
 
 ## What is Parmana?
