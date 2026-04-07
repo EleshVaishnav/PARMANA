@@ -100,8 +100,17 @@ class node_index_html,node_gh_pages,node_static_workflow toneMint
 class node_issue_template,node_bug_template,node_security,node_conduct,node_contributing,node_verification toneRose
 
 ```
+---
+## Star History
 
-
+<a href="https://www.star-history.com/?repos=eleshVaishnav%2FPARMANA&type=date&logscale=&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=eleshVaishnav/PARMANA&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=eleshVaishnav/PARMANA&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=eleshVaishnav/PARMANA&type=date&legend=top-left" />
+ </picture>
+</a>
+---
 ## What is Parmana?
 
 Parmana is a **fully local AI assistant** that runs entirely on your PC.
@@ -111,9 +120,7 @@ Parmana is a **fully local AI assistant** that runs entirely on your PC.
 - No data leaves your device
 - No rate limits
 - Works in Hindi, Hinglish, English, and 50+ languages
-
 ---
-
 ## Install (One Line)
 
 **Mac / Linux:**
